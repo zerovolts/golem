@@ -1,0 +1,147 @@
+var _user$project$Main$board = A2(
+	_elm_lang$svg$Svg$rect,
+	{
+		ctor: '::',
+		_0: _elm_lang$svg$Svg_Attributes$x('0'),
+		_1: {
+			ctor: '::',
+			_0: _elm_lang$svg$Svg_Attributes$y('0'),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$svg$Svg_Attributes$width('320'),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$height('320'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$svg$Svg_Attributes$fill('#dc6'),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		}
+	},
+	{ctor: '[]'});
+var _user$project$Main$colorToHex = function (c) {
+	var _p0 = c;
+	if (_p0.ctor === 'White') {
+		return '#eee';
+	} else {
+		return '#333';
+	}
+};
+var _user$project$Main$stone = F3(
+	function (c, x, y) {
+		return A2(
+			_elm_lang$svg$Svg$circle,
+			{
+				ctor: '::',
+				_0: _elm_lang$svg$Svg_Attributes$cx(
+					_elm_lang$core$Basics$toString(x)),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$cy(
+						_elm_lang$core$Basics$toString(y)),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$svg$Svg_Attributes$r('16'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$svg$Svg_Attributes$style(
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									'fill: ',
+									_user$project$Main$colorToHex(c))),
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			},
+			{ctor: '[]'});
+	});
+var _user$project$Main$stylesheet = function (name) {
+	return A3(
+		_elm_lang$html$Html$node,
+		'link',
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$rel('stylesheet'),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$href(
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'./styles/',
+						A2(_elm_lang$core$Basics_ops['++'], name, '.css'))),
+				_1: {ctor: '[]'}
+			}
+		},
+		{ctor: '[]'});
+};
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p1 = msg;
+		return model;
+	});
+var _user$project$Main$model = 0;
+var _user$project$Main$Nothing = {ctor: 'Nothing'};
+var _user$project$Main$White = {ctor: 'White'};
+var _user$project$Main$Black = {ctor: 'Black'};
+var _user$project$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$svg$Svg_Attributes$class('horizontal-container'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$class('vertical-container'),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _user$project$Main$stylesheet('main'),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$svg$Svg$svg,
+							{
+								ctor: '::',
+								_0: _elm_lang$svg$Svg_Attributes$class('game-board'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$svg$Svg_Attributes$width('320'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$svg$Svg_Attributes$height('320'),
+										_1: {ctor: '[]'}
+									}
+								}
+							},
+							{
+								ctor: '::',
+								_0: _user$project$Main$board,
+								_1: {
+									ctor: '::',
+									_0: A3(_user$project$Main$stone, _user$project$Main$White, 32, 32),
+									_1: {
+										ctor: '::',
+										_0: A3(_user$project$Main$stone, _user$project$Main$Black, 100, 100),
+										_1: {ctor: '[]'}
+									}
+								}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$Main$main = _elm_lang$html$Html$beginnerProgram(
+	{model: _user$project$Main$model, view: _user$project$Main$view, update: _user$project$Main$update})();
