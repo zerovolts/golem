@@ -1,3 +1,7 @@
+body {
+  font-family: Ubuntu;
+}
+
 .horizontal-container {
   min-height: 100vh;
   display: flex;
@@ -11,4 +15,14 @@
   align-content: center;
   justify-content: center;
   text-align: center;
+}
+
+.empty-space {
+  fill: none;
+  stroke: none;
+  pointer-events: all;
+}
+
+.empty-space:hover {
+  fill: rgba(0, 0, 0, 0.5);
 }

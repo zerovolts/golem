@@ -3,7 +3,7 @@ module Main exposing (..)
 import Array exposing (Array)
 import Html
 import Model exposing (Board, Model, Stone(..))
-import Msg exposing (Msg)
+import Msg exposing (Msg(..))
 import Update exposing (update)
 import View exposing (view)
 
@@ -20,7 +20,10 @@ main =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { board = newBoard 19 }
+    ( { board = newBoard 19
+      , turn = White
+      , turnNumber = 1
+      }
     , Cmd.none
     )
 
@@ -34,13 +37,3 @@ newBoard size =
                     Nothing
                 )
         )
-
-
-placeStone : Stone -> Int -> Int -> Board -> Board
-placeStone stone x y board =
-    case Array.get x board of
-        Just row ->
-            Array.set y (Array.set x (Just stone) row) board
-
-        Nothing ->
-            board

@@ -4,8 +4,9 @@ import Array exposing (Array)
 import Constants exposing (boardPadding, stonePadding, stoneRadius, stoneSize)
 import Html exposing (..)
 import Html.Attributes exposing (href, rel)
+import Html.Events exposing (onClick)
 import Model exposing (Board, Model, Stone(..))
-import Msg exposing (Msg)
+import Msg exposing (Msg(..))
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 
@@ -32,6 +33,7 @@ view model =
                     ++ drawLines model.board
                     ++ drawStones model.board
                 )
+            , div [] [ Html.text ("Turn: " ++ toString model.turnNumber) ]
             ]
         ]
 
@@ -46,15 +48,28 @@ colorToHex stone =
             "#333"
 
 
-drawStone : Stone -> Int -> Int -> Svg Msg
-drawStone stone x y =
-    circle
-        [ cx (toString (x * stoneSize + stoneSize + stoneRadius + 2))
-        , cy (toString (y * stoneSize + stoneSize + stoneRadius + 2))
-        , r (toString stoneRadius)
-        , Svg.Attributes.style ("fill: " ++ colorToHex stone)
-        ]
-        []
+drawStone : Maybe Stone -> Int -> Int -> Svg Msg
+drawStone maybeStone x y =
+    case maybeStone of
+        Just stone ->
+            circle
+                [ cx (toString (x * stoneSize + stoneSize + stoneRadius + 2))
+                , cy (toString (y * stoneSize + stoneSize + stoneRadius + 2))
+                , r (toString stoneRadius)
+                , Svg.Attributes.style ("fill: " ++ colorToHex stone)
+                ]
+                []
+
+        Nothing ->
+            rect
+                [ Svg.Attributes.x (toString (x * stoneSize + stoneSize))
+                , Svg.Attributes.y (toString (y * stoneSize + stoneSize))
+                , width (toString stoneSize)
+                , height (toString stoneSize)
+                , class "empty-space"
+                , onClick (PlaceStone x y)
+                ]
+                []
 
 
 filterEmptyStones : Array (Maybe Stone) -> List Stone
@@ -78,11 +93,11 @@ drawStones board =
         |> Array.indexedMap
             (\x col ->
                 col
-                    |> filterEmptyStones
-                    |> List.indexedMap
+                    |> Array.indexedMap
                         (\y stone ->
                             drawStone stone x y
                         )
+                    |> Array.toList
             )
         |> Array.toList
         |> List.concat

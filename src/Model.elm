@@ -13,4 +13,7 @@ type alias Board =
 
 
 type alias Model =
-    { board : Board }
+    { board : Board
+    , turn : Stone
+    , turnNumber : Int
+    }

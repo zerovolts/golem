@@ -2,4 +2,4 @@ module Msg exposing (..)
 
 
 type Msg
-    = None
+    = PlaceStone Int Int
