@@ -2,12 +2,13 @@ module Main exposing (..)
 
 import Array exposing (Array)
 import Html
-import Model exposing (Board, Color(..), Model)
+import Model exposing (Board, Model, Stone(..))
 import Msg exposing (Msg)
 import Update exposing (update)
 import View exposing (view)
 
 
+main : Program Never Model Msg
 main =
     Html.program
         { init = init
@@ -30,16 +31,16 @@ newBoard size =
         (\x ->
             Array.initialize size
                 (\y ->
-                    Black
+                    Nothing
                 )
         )
 
 
-placeStone : Color -> Int -> Int -> Board -> Board
-placeStone c x y board =
+placeStone : Stone -> Int -> Int -> Board -> Board
+placeStone stone x y board =
     case Array.get x board of
         Just row ->
-            Array.set y (Array.set x c row) board
+            Array.set y (Array.set x (Just stone) row) board
 
         Nothing ->
             board

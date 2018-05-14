@@ -3,21 +3,13 @@ module Model exposing (..)
 import Array exposing (Array)
 
 
-type Color
+type Stone
     = Black
     | White
-    | Empty
-
-
-type alias GamePiece =
-    { color : Color
-    , x : Int
-    , y : Int
-    }
 
 
 type alias Board =
-    Array (Array Color)
+    Array (Array (Maybe Stone))
 
 
 type alias Model =

@@ -4,7 +4,7 @@ import Array exposing (Array)
 import Constants exposing (boardPadding, stonePadding, stoneRadius, stoneSize)
 import Html exposing (..)
 import Html.Attributes exposing (href, rel)
-import Model exposing (Board, Color(..), Model)
+import Model exposing (Board, Model, Stone(..))
 import Msg exposing (Msg)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
@@ -36,47 +36,56 @@ view model =
         ]
 
 
-colorToHex : Color -> String
-colorToHex c =
-    case c of
+colorToHex : Stone -> String
+colorToHex stone =
+    case stone of
         White ->
             "#eee"
 
         Black ->
             "#333"
 
-        Empty ->
-            "#000"
 
-
-drawStone : Color -> Int -> Int -> Svg Msg
-drawStone c x y =
+drawStone : Stone -> Int -> Int -> Svg Msg
+drawStone stone x y =
     circle
         [ cx (toString (x * stoneSize + stoneSize + stoneRadius + 2))
         , cy (toString (y * stoneSize + stoneSize + stoneRadius + 2))
         , r (toString stoneRadius)
-        , Svg.Attributes.style ("fill: " ++ colorToHex c)
+        , Svg.Attributes.style ("fill: " ++ colorToHex stone)
         ]
         []
 
 
+filterEmptyStones : Array (Maybe Stone) -> List Stone
+filterEmptyStones stones =
+    stones
+        |> Array.toList
+        |> List.filterMap
+            (\maybeStone ->
+                case maybeStone of
+                    Just stone ->
+                        Just stone
+
+                    Nothing ->
+                        Nothing
+            )
+
+
 drawStones : Board -> List (Svg Msg)
 drawStones board =
-    List.concat
-        (Array.toList
-            (board
-                |> Array.indexedMap
-                    (\i col ->
-                        Array.toList
-                            (Array.indexedMap
-                                (\j piece ->
-                                    drawStone piece i j
-                                )
-                                col
-                            )
-                    )
+    board
+        |> Array.indexedMap
+            (\x col ->
+                col
+                    |> filterEmptyStones
+                    |> List.indexedMap
+                        (\y stone ->
+                            drawStone stone x y
+                        )
             )
-        )
+        |> Array.toList
+        |> List.concat
 
 
 drawBoard : Board -> Svg Msg
