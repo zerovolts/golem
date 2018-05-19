@@ -21,8 +21,9 @@ main =
 init : ( Model, Cmd Msg )
 init =
     ( { board = newBoard 19
-      , turn = White
+      , turn = Black
       , turnNumber = 1
+      , chains = []
       }
     , Cmd.none
     )

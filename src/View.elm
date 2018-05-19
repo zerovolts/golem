@@ -5,7 +5,7 @@ import Constants exposing (boardPadding, stonePadding, stoneRadius, stoneSize)
 import Html exposing (..)
 import Html.Attributes exposing (href, rel)
 import Html.Events exposing (onClick)
-import Model exposing (Board, Model, Stone(..))
+import Model exposing (Board, Model, Point, Stone(..))
 import Msg exposing (Msg(..))
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
@@ -48,8 +48,8 @@ colorToHex stone =
             "#333"
 
 
-drawStone : Maybe Stone -> Int -> Int -> Svg Msg
-drawStone maybeStone x y =
+drawStone : Maybe Stone -> Point -> Svg Msg
+drawStone maybeStone ( x, y ) =
     case maybeStone of
         Just stone ->
             circle
@@ -67,7 +67,7 @@ drawStone maybeStone x y =
                 , width (toString stoneSize)
                 , height (toString stoneSize)
                 , class "empty-space"
-                , onClick (PlaceStone x y)
+                , onClick (PlaceStone ( x, y ))
                 ]
                 []
 
@@ -95,7 +95,7 @@ drawStones board =
                 col
                     |> Array.indexedMap
                         (\y stone ->
-                            drawStone stone x y
+                            drawStone stone ( x, y )
                         )
                     |> Array.toList
             )
