@@ -41,6 +41,28 @@ findChainIntermediate ( x, y ) stone board set =
 
 {-| TODO: Given a position, returns a list of all surrounding liberties
 -}
-findLiberties : Point -> Board -> List Point
-findLiberties ( x, y ) board =
-    []
+findLiberties : List Point -> Board -> Set Point
+findLiberties points board =
+    points
+        |> List.map (\point -> Set.toList (findStoneLiberties point board))
+        |> List.concat
+        |> Set.fromList
+
+
+{-| TODO: Given a position, returns the set of adjacent liberties
+-}
+findStoneLiberties : Point -> Board -> Set Point
+findStoneLiberties ( x, y ) board =
+    Set.empty
+        |> checkEmpty ( x + 1, y ) board
+        |> checkEmpty ( x - 1, y ) board
+        |> checkEmpty ( x, y + 1 ) board
+        |> checkEmpty ( x, y - 1 ) board
+
+
+checkEmpty : Point -> Board -> Set Point -> Set Point
+checkEmpty point board set =
+    if getStone point board == Nothing then
+        Set.insert point set
+    else
+        set
