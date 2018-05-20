@@ -61,8 +61,14 @@ findStoneLiberties ( x, y ) board =
 
 
 checkEmpty : Point -> Board -> Set Point -> Set Point
-checkEmpty point board set =
-    if getStone point board == Nothing then
-        Set.insert point set
+checkEmpty ( x, y ) board set =
+    if
+        (getStone ( x, y ) board == Nothing)
+            && (x >= 0)
+            && (y >= 0)
+            && (x < Array.length board)
+            && (y < Array.length board)
+    then
+        Set.insert ( x, y ) set
     else
         set
