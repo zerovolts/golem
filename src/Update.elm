@@ -16,6 +16,7 @@ update msg model =
                             | board = board
                             , turn = oppositeColor model.turn
                             , turnNumber = model.turnNumber + 1
+                            , passFlag = False
                         }
 
                     Nothing ->

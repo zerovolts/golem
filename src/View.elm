@@ -40,7 +40,7 @@ view model =
                     div [] [ Html.text "Game Over!" ]
 
                 False ->
-                    Html.button [ onClick Pass ] [ Html.text "Pass" ]
+                    Html.button [ onClick Pass, width "6rem" ] [ Html.text "Pass" ]
             ]
         ]
 
