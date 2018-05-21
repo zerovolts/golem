@@ -27,4 +27,6 @@ type alias Model =
     , turn : Stone
     , turnNumber : Int
     , chains : List Chain
+    , passFlag : Bool
+    , gameOver : Bool
     }

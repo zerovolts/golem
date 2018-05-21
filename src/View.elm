@@ -33,7 +33,14 @@ view model =
                     ++ drawLines model.board
                     ++ drawStones model.board
                 )
-            , div [] [ Html.text ("Turn: " ++ toString model.turnNumber) ]
+            , div [] [ Html.text ("Turn Number: " ++ toString model.turnNumber) ]
+            , div [] [ Html.text ("Turn: " ++ toString model.turn) ]
+            , case model.gameOver of
+                True ->
+                    div [] [ Html.text "Game Over!" ]
+
+                False ->
+                    Html.button [ onClick Pass ] [ Html.text "Pass" ]
             ]
         ]
 

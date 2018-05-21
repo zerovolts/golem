@@ -5,6 +5,17 @@ import Model exposing (Board, Point, Stone(..))
 import Set exposing (Set)
 
 
+newBoard : Int -> Board
+newBoard size =
+    Array.initialize size
+        (\x ->
+            Array.initialize size
+                (\y ->
+                    Nothing
+                )
+        )
+
+
 getStone : Point -> Board -> Maybe Stone
 getStone ( x, y ) board =
     case Array.get x board of

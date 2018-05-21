@@ -1,6 +1,7 @@
 module Main exposing (..)
 
 import Array exposing (Array)
+import Game exposing (newBoard)
 import Html
 import Model exposing (Board, Model, Stone(..))
 import Msg exposing (Msg(..))
@@ -24,17 +25,8 @@ init =
       , turn = Black
       , turnNumber = 1
       , chains = []
+      , passFlag = False
+      , gameOver = False
       }
     , Cmd.none
     )
-
-
-newBoard : Int -> Board
-newBoard size =
-    Array.initialize size
-        (\x ->
-            Array.initialize size
-                (\y ->
-                    Nothing
-                )
-        )
