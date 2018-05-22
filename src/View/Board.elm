@@ -94,7 +94,7 @@ drawBoardBackground board =
         , y "0"
         , width (toString (Array.length board * stoneSize + (stoneSize * 2)))
         , height (toString (Array.length board * stoneSize + (stoneSize * 2)))
-        , fill "#dc5"
+        , fill "#da5"
         ]
         []
 
