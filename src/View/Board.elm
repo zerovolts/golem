@@ -18,6 +18,7 @@ drawBoard board =
         ]
         ([ drawBoardBackground board ]
             ++ drawLines board
+            ++ drawDots board
             ++ drawStones board
         )
 
@@ -138,3 +139,26 @@ drawLines board =
                         drawHorizontalLine board x
                     )
            )
+
+
+drawDot : Point -> Svg Msg
+drawDot ( x, y ) =
+    circle
+        [ cx (toString (x * stoneSize + boardPadding))
+        , cy (toString (y * stoneSize + boardPadding))
+        , r "3px"
+        , Svg.Attributes.style "fill: #333"
+        ]
+        []
+
+
+getAllCombinations : List a -> List ( a, a )
+getAllCombinations list =
+    List.concat (List.map (\x -> List.map (\y -> ( x, y )) list) list)
+
+
+drawDots : Board -> List (Svg Msg)
+drawDots board =
+    List.map
+        (\point -> drawDot point)
+        (getAllCombinations [ 3, 9, 15 ])
