@@ -159,6 +159,10 @@ getAllCombinations list =
 
 drawDots : Board -> List (Svg Msg)
 drawDots board =
+    let
+        boardLen =
+            Array.length board - 1
+    in
     List.map
         (\point -> drawDot point)
-        (getAllCombinations [ 3, 9, 15 ])
+        (getAllCombinations [ 3, boardLen // 2, boardLen - 3 ])

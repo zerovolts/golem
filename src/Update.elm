@@ -14,6 +14,7 @@ update msg model =
                     Just board ->
                         { model
                             | board = board
+                            , history = Model.PlaceStone point :: model.history
                             , turn = oppositeColor model.turn
                             , turnNumber = model.turnNumber + 1
                             , passFlag = False
@@ -30,6 +31,7 @@ update msg model =
             if model.passFlag == False then
                 ( { model
                     | turn = oppositeColor model.turn
+                    , history = Model.Pass :: model.history
                     , turnNumber = model.turnNumber + 1
                     , passFlag = True
                   }
@@ -38,6 +40,7 @@ update msg model =
             else
                 ( { model
                     | turn = oppositeColor model.turn
+                    , history = Model.Pass :: model.history
                     , turnNumber = model.turnNumber + 1
                     , passFlag = False
                     , gameOver = True

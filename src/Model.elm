@@ -8,6 +8,15 @@ type Stone
     | White
 
 
+type Turn
+    = PlaceStone Point
+    | Pass
+
+
+type alias History =
+    List Turn
+
+
 type alias Point =
     ( Int, Int )
 
@@ -24,6 +33,7 @@ type alias Chain =
 
 type alias Model =
     { board : Board
+    , history : History
     , turn : Stone
     , turnNumber : Int
     , chains : List Chain

@@ -59,6 +59,10 @@ hr {
   justify-content: space-between;
 }
 
+.game-board {
+  cursor: none;
+}
+
 button {
   color: #eee;
   border: none;

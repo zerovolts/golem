@@ -40,7 +40,14 @@ findChain point board =
 
 findChainIntermediate : Point -> Maybe Stone -> Board -> Set Point -> Set Point
 findChainIntermediate ( x, y ) stone board set =
-    if (getStone ( x, y ) board == stone) && not (Set.member ( x, y ) set) then
+    if
+        (getStone ( x, y ) board == stone)
+            && not (Set.member ( x, y ) set)
+            && (x >= 0)
+            && (y >= 0)
+            && (x < Array.length board)
+            && (y < Array.length board)
+    then
         Set.insert ( x, y ) set
             |> findChainIntermediate ( x + 1, y ) stone board
             |> findChainIntermediate ( x - 1, y ) stone board
@@ -55,7 +62,7 @@ findLiberties point board =
     findChainLiberties (findChain point board) board
 
 
-{-| TODO: Given a position, returns a list of all surrounding liberties
+{-| Given a chain, returns a list of all surrounding liberties
 -}
 findChainLiberties : Set Point -> Board -> Set Point
 findChainLiberties points board =
@@ -66,19 +73,21 @@ findChainLiberties points board =
         |> Set.fromList
 
 
-{-| TODO: Given a position, returns the set of adjacent liberties
+{-| Given a position, returns the set of adjacent liberties
 -}
 findStoneLiberties : Point -> Board -> Set Point
 findStoneLiberties ( x, y ) board =
     Set.empty
-        |> checkEmpty ( x + 1, y ) board
-        |> checkEmpty ( x - 1, y ) board
-        |> checkEmpty ( x, y + 1 ) board
-        |> checkEmpty ( x, y - 1 ) board
+        |> addIfEmpty ( x + 1, y ) board
+        |> addIfEmpty ( x - 1, y ) board
+        |> addIfEmpty ( x, y + 1 ) board
+        |> addIfEmpty ( x, y - 1 ) board
 
 
-checkEmpty : Point -> Board -> Set Point -> Set Point
-checkEmpty ( x, y ) board set =
+{-| Given a point and a set, add the point to the set if that point is empty and in-bounds
+-}
+addIfEmpty : Point -> Board -> Set Point -> Set Point
+addIfEmpty ( x, y ) board set =
     if
         (getStone ( x, y ) board == Nothing)
             && (x >= 0)
@@ -183,3 +192,69 @@ placeStone stone point board =
         |> placeStoneNoChecks stone point
         |> removeAdjacentCaptured point
         |> preventSuicide point
+
+
+determineOwner : ( List Stone, List Stone ) -> Maybe Stone
+determineOwner stoneGroups =
+    case stoneGroups of
+        ( _, [] ) ->
+            Just White
+
+        ( [], _ ) ->
+            Just Black
+
+        _ ->
+            Nothing
+
+
+findAreaOwner : Set Point -> Board -> Maybe Stone
+findAreaOwner points board =
+    findAreaBoundaries points board
+        |> Set.toList
+        |> List.map (\point -> getStone point board)
+        |> List.foldl
+            (\maybePoint points ->
+                case maybePoint of
+                    Just point ->
+                        point :: points
+
+                    Nothing ->
+                        points
+            )
+            []
+        |> List.partition (\stone -> stone == White)
+        |> determineOwner
+
+
+findAreaBoundaries : Set Point -> Board -> Set Point
+findAreaBoundaries points board =
+    points
+        |> Set.toList
+        |> List.map (\point -> Set.toList (findPointBoundaries point board))
+        |> List.concat
+        |> Set.fromList
+
+
+findPointBoundaries : Point -> Board -> Set Point
+findPointBoundaries ( x, y ) board =
+    Set.empty
+        |> addIfStone ( x + 1, y ) board
+        |> addIfStone ( x - 1, y ) board
+        |> addIfStone ( x, y + 1 ) board
+        |> addIfStone ( x, y - 1 ) board
+
+
+{-| Possibly combine this with "addIfEmpty"
+-}
+addIfStone : Point -> Board -> Set Point -> Set Point
+addIfStone ( x, y ) board set =
+    if
+        (getStone ( x, y ) board /= Nothing)
+            && (x >= 0)
+            && (y >= 0)
+            && (x < Array.length board)
+            && (y < Array.length board)
+    then
+        Set.insert ( x, y ) set
+    else
+        set
