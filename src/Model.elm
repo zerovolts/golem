@@ -1,6 +1,7 @@
 module Model exposing (..)
 
 import Array exposing (Array)
+import Set exposing (Set)
 
 
 type Stone
@@ -11,6 +12,12 @@ type Stone
 type Turn
     = PlaceStone Point
     | Pass
+
+
+type GameStatus
+    = Playing
+    | OnePass
+    | Over
 
 
 type alias History =
@@ -25,18 +32,17 @@ type alias Board =
     Array (Array (Maybe Stone))
 
 
-type alias Chain =
-    { stones : List Point
-    , liberties : List Point
+type alias Territory =
+    { owner : Stone
+    , points : Set Point
     }
 
 
 type alias Model =
     { board : Board
+    , territories : Set Territory
     , history : History
     , turn : Stone
     , turnNumber : Int
-    , chains : List Chain
-    , passFlag : Bool
-    , gameOver : Bool
+    , gameStatus : GameStatus
     }

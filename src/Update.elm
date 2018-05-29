@@ -1,7 +1,7 @@
 module Update exposing (..)
 
 import Game exposing (oppositeColor, placeStone)
-import Model exposing (Board, Model, Point, Stone(..))
+import Model exposing (Board, GameStatus(..), Model, Point, Stone(..))
 import Msg exposing (Msg(..))
 
 
@@ -9,7 +9,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         PlaceStone point ->
-            if model.gameOver == False then
+            if model.gameStatus /= Over then
                 ( case placeStone model.turn point model.board of
                     Just board ->
                         { model
@@ -17,7 +17,7 @@ update msg model =
                             , history = Model.PlaceStone point :: model.history
                             , turn = oppositeColor model.turn
                             , turnNumber = model.turnNumber + 1
-                            , passFlag = False
+                            , gameStatus = Playing
                         }
 
                     Nothing ->
@@ -28,12 +28,12 @@ update msg model =
                 ( model, Cmd.none )
 
         Pass ->
-            if model.passFlag == False then
+            if model.gameStatus == Playing then
                 ( { model
                     | turn = oppositeColor model.turn
                     , history = Model.Pass :: model.history
                     , turnNumber = model.turnNumber + 1
-                    , passFlag = True
+                    , gameStatus = OnePass
                   }
                 , Cmd.none
                 )
@@ -42,8 +42,7 @@ update msg model =
                     | turn = oppositeColor model.turn
                     , history = Model.Pass :: model.history
                     , turnNumber = model.turnNumber + 1
-                    , passFlag = False
-                    , gameOver = True
+                    , gameStatus = Over
                   }
                 , Cmd.none
                 )

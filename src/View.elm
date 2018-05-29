@@ -2,7 +2,7 @@ module View exposing (..)
 
 import Html exposing (..)
 import Html.Events exposing (onClick)
-import Model exposing (Board, Model, Point, Stone(..))
+import Model exposing (Board, GameStatus(..), Model, Point, Stone(..))
 import Msg exposing (Msg(..))
 import Svg.Attributes exposing (..)
 import View.Board exposing (drawBoard)
@@ -33,11 +33,11 @@ sideBar model =
             , kvPair "Turn Counter" (toString model.turnNumber)
             , kvPair "Turn" (toString model.turn)
             ]
-        , case model.gameOver of
-            True ->
+        , case model.gameStatus of
+            Over ->
                 div [] [ Html.text "Game Over!" ]
 
-            False ->
+            _ ->
                 Html.button [ onClick Pass ] [ Html.text "Pass" ]
         ]
 

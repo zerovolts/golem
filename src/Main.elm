@@ -1,10 +1,10 @@
 module Main exposing (..)
 
-import Array exposing (Array)
 import Game exposing (newBoard)
 import Html
-import Model exposing (Board, Model, Stone(..))
+import Model exposing (Board, GameStatus(..), Model, Stone(..))
 import Msg exposing (Msg(..))
+import Set
 import Update exposing (update)
 import View exposing (view)
 
@@ -22,12 +22,11 @@ main =
 init : ( Model, Cmd Msg )
 init =
     ( { board = newBoard 19
+      , territories = Set.empty
       , history = []
       , turn = Black
       , turnNumber = 1
-      , chains = []
-      , passFlag = False
-      , gameOver = False
+      , gameStatus = Playing
       }
     , Cmd.none
     )

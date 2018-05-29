@@ -258,3 +258,11 @@ addIfStone ( x, y ) board set =
         Set.insert ( x, y ) set
     else
         set
+
+
+
+{-
+   - before placing a stone, find the chain of the selected intersection.
+   - calculate the areas for the intersections adjacent to the placed stone.
+   - remove the first chain from the model, then add the new ones
+-}
