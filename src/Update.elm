@@ -16,7 +16,7 @@ update msg model =
                             | board = board
                             , history = Model.PlaceStone point :: model.history
                             , turn = oppositeColor model.turn
-                            , turnNumber = model.turnNumber + 1
+                            , turnCount = model.turnCount + 1
                             , gameStatus = Playing
                         }
 
@@ -32,7 +32,7 @@ update msg model =
                 ( { model
                     | turn = oppositeColor model.turn
                     , history = Model.Pass :: model.history
-                    , turnNumber = model.turnNumber + 1
+                    , turnCount = model.turnCount + 1
                     , gameStatus = OnePass
                   }
                 , Cmd.none
@@ -41,7 +41,7 @@ update msg model =
                 ( { model
                     | turn = oppositeColor model.turn
                     , history = Model.Pass :: model.history
-                    , turnNumber = model.turnNumber + 1
+                    , turnCount = model.turnCount + 1
                     , gameStatus = Over
                   }
                 , Cmd.none

@@ -30,7 +30,7 @@ sideBar model =
         [ div []
             [ h2 [] [ Html.text "囲碁：Golem" ]
             , hr [] []
-            , kvPair "Turn Counter" (toString model.turnNumber)
+            , kvPair "Turn Counter" (toString model.turnCount)
             , kvPair "Turn" (toString model.turn)
             ]
         , case model.gameStatus of

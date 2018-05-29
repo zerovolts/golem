@@ -25,7 +25,7 @@ init =
       , territories = Set.empty
       , history = []
       , turn = Black
-      , turnNumber = 1
+      , turnCount = 1
       , gameStatus = Playing
       }
     , Cmd.none

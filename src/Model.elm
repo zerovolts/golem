@@ -43,6 +43,6 @@ type alias Model =
     , territories : Set Territory
     , history : History
     , turn : Stone
-    , turnNumber : Int
+    , turnCount : Int
     , gameStatus : GameStatus
     }
