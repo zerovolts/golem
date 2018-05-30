@@ -302,3 +302,10 @@ findAllTerritories board =
    - calculate the areas for the intersections adjacent to the placed stone.
    - remove the first chain from the model, then add the new ones
 -}
+
+
+territoryCount : Stone -> EverySet Territory -> Int
+territoryCount stone territories =
+    territories
+        |> EverySet.filter (\territory -> territory.owner == Just stone)
+        |> EverySet.foldl (\territory total -> total + EverySet.size territory.points) 0
