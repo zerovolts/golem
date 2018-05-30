@@ -1,5 +1,6 @@
 module GameTest exposing (..)
 
+import EverySet
 import Expect exposing (Expectation)
 import Game
     exposing
@@ -12,7 +13,6 @@ import Game
         , placeStoneNoChecks
         )
 import Model exposing (Board, Stone(..))
-import Set
 import Test exposing (..)
 
 
@@ -55,26 +55,26 @@ suite =
                 \_ ->
                     Expect.equal
                         (findChain ( 2, 2 ) board)
-                        (Set.fromList [ ( 1, 0 ), ( 0, 1 ), ( 1, 1 ), ( 2, 1 ), ( 2, 2 ) ])
+                        (EverySet.fromList [ ( 1, 0 ), ( 0, 1 ), ( 1, 1 ), ( 2, 1 ), ( 2, 2 ) ])
             , test "returns all connected empty intersections" <|
                 \_ ->
                     Expect.equal
                         (findChain ( 3, 0 ) board)
-                        (Set.fromList [ ( 3, 0 ), ( 4, 0 ), ( 4, 1 ) ])
+                        (EverySet.fromList [ ( 3, 0 ), ( 4, 0 ), ( 4, 1 ) ])
             ]
         , describe "Game.findStoneLiberties"
             [ test "returns all adjacent liberties" <|
                 \_ ->
                     Expect.equal
                         (findStoneLiberties ( 3, 1 ) board)
-                        (Set.fromList [ ( 3, 0 ), ( 4, 1 ), ( 3, 2 ) ])
+                        (EverySet.fromList [ ( 3, 0 ), ( 4, 1 ), ( 3, 2 ) ])
             ]
         , describe "Game.findLiberties"
             [ test "returns all liberties for a chain" <|
                 \_ ->
                     Expect.equal
                         (findLiberties ( 1, 1 ) board)
-                        (Set.fromList [ ( 0, 0 ), ( 0, 2 ), ( 2, 3 ), ( 3, 2 ) ])
+                        (EverySet.fromList [ ( 0, 0 ), ( 0, 2 ), ( 2, 3 ), ( 3, 2 ) ])
             ]
         , describe "Game.findAreaOwner"
             [ test "returns Black when area is surrounded by Black pieces" <|
@@ -87,7 +87,7 @@ suite =
                     Expect.equal
                         (findAreaOwner (findChain ( 3, 0 ) board) board)
                         (Just White)
-            , test "returns Nothing when are is surrounded by both White and Black pieces" <|
+            , test "returns Nothing when area is surrounded by both White and Black pieces" <|
                 \_ ->
                     Expect.equal
                         (findAreaOwner (findChain ( 0, 4 ) board) board)

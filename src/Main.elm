@@ -1,10 +1,10 @@
 module Main exposing (..)
 
+import EverySet
 import Game exposing (newBoard)
 import Html
 import Model exposing (Board, GameStatus(..), Model, Stone(..))
 import Msg exposing (Msg(..))
-import Set
 import Update exposing (update)
 import View exposing (view)
 
@@ -22,7 +22,7 @@ main =
 init : ( Model, Cmd Msg )
 init =
     ( { board = newBoard 19
-      , territories = Set.empty
+      , territories = EverySet.empty
       , history = []
       , turn = Black
       , turnCount = 1

@@ -1,6 +1,6 @@
 module Update exposing (..)
 
-import Game exposing (oppositeColor, placeStone)
+import Game exposing (findAllTerritories, oppositeColor, placeStone)
 import Model exposing (Board, GameStatus(..), Model, Point, Stone(..))
 import Msg exposing (Msg(..))
 
@@ -14,6 +14,7 @@ update msg model =
                     Just board ->
                         { model
                             | board = board
+                            , territories = findAllTerritories board
                             , history = Model.PlaceStone point :: model.history
                             , turn = oppositeColor model.turn
                             , turnCount = model.turnCount + 1
@@ -28,21 +29,15 @@ update msg model =
                 ( model, Cmd.none )
 
         Pass ->
-            if model.gameStatus == Playing then
-                ( { model
-                    | turn = oppositeColor model.turn
-                    , history = Model.Pass :: model.history
-                    , turnCount = model.turnCount + 1
-                    , gameStatus = OnePass
-                  }
-                , Cmd.none
-                )
-            else
-                ( { model
-                    | turn = oppositeColor model.turn
-                    , history = Model.Pass :: model.history
-                    , turnCount = model.turnCount + 1
-                    , gameStatus = Over
-                  }
-                , Cmd.none
-                )
+            ( { model
+                | turn = oppositeColor model.turn
+                , history = Model.Pass :: model.history
+                , turnCount = model.turnCount + 1
+                , gameStatus =
+                    if model.gameStatus == Playing then
+                        OnePass
+                    else
+                        Over
+              }
+            , Cmd.none
+            )

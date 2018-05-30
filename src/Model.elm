@@ -1,7 +1,7 @@
 module Model exposing (..)
 
 import Array exposing (Array)
-import Set exposing (Set)
+import EverySet exposing (EverySet)
 
 
 type Stone
@@ -33,14 +33,14 @@ type alias Board =
 
 
 type alias Territory =
-    { owner : Stone
-    , points : Set Point
+    { owner : Maybe Stone
+    , points : EverySet Point
     }
 
 
 type alias Model =
     { board : Board
-    , territories : Set Territory
+    , territories : EverySet Territory
     , history : History
     , turn : Stone
     , turnCount : Int

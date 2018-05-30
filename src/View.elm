@@ -17,7 +17,7 @@ view model =
             [ class "horizontal-container" ]
             [ div [ class "vertical-container" ]
                 [ stylesheet "main"
-                , drawBoard model.board
+                , drawBoard model.board model.territories
                 ]
             ]
         ]

@@ -2,15 +2,18 @@ module View.Board exposing (..)
 
 import Array exposing (Array)
 import Constants exposing (boardPadding, stonePadding, stoneRadius, stoneSize)
+import EverySet exposing (EverySet)
+import Game exposing (getPointTerritory)
+import Helpers exposing (getAllCombinations)
 import Html.Events exposing (onClick)
-import Model exposing (Board, Model, Point, Stone(..))
+import Model exposing (Board, Model, Point, Stone(..), Territory)
 import Msg exposing (Msg(..))
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 
 
-drawBoard : Board -> Svg Msg
-drawBoard board =
+drawBoard : Board -> EverySet Territory -> Svg Msg
+drawBoard board territories =
     svg
         [ class "game-board"
         , width (toString (Array.length board * stoneSize + (stoneSize * 2)))
@@ -19,7 +22,7 @@ drawBoard board =
         ([ drawBoardBackground board ]
             ++ drawLines board
             ++ drawDots board
-            ++ drawStones board
+            ++ drawStones board territories
         )
 
 
@@ -33,8 +36,21 @@ colorToHex stone =
             "#333"
 
 
-drawStone : Maybe Stone -> Point -> Svg Msg
-drawStone maybeStone ( x, y ) =
+drawTerritory : Point -> EverySet Territory -> String
+drawTerritory point territories =
+    case getPointTerritory point territories of
+        Just White ->
+            "white-territory"
+
+        Just Black ->
+            "black-territory"
+
+        Nothing ->
+            "empty-space"
+
+
+drawStone : Maybe Stone -> Point -> EverySet Territory -> Svg Msg
+drawStone maybeStone ( x, y ) territories =
     case maybeStone of
         Just stone ->
             circle
@@ -51,7 +67,7 @@ drawStone maybeStone ( x, y ) =
                 , Svg.Attributes.y (toString (y * stoneSize + stoneSize))
                 , width (toString stoneSize)
                 , height (toString stoneSize)
-                , class "empty-space"
+                , class (drawTerritory ( x, y ) territories)
                 , onClick (PlaceStone ( x, y ))
                 ]
                 []
@@ -72,15 +88,15 @@ filterEmptyStones stones =
             )
 
 
-drawStones : Board -> List (Svg Msg)
-drawStones board =
+drawStones : Board -> EverySet Territory -> List (Svg Msg)
+drawStones board territories =
     board
         |> Array.indexedMap
             (\x col ->
                 col
                     |> Array.indexedMap
                         (\y stone ->
-                            drawStone stone ( x, y )
+                            drawStone stone ( x, y ) territories
                         )
                     |> Array.toList
             )
@@ -150,11 +166,6 @@ drawDot ( x, y ) =
         , Svg.Attributes.style "fill: #333"
         ]
         []
-
-
-getAllCombinations : List a -> List ( a, a )
-getAllCombinations list =
-    List.concat (List.map (\x -> List.map (\y -> ( x, y )) list) list)
 
 
 drawDots : Board -> List (Svg Msg)
