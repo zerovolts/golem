@@ -46,6 +46,18 @@ hr {
   fill: rgba(0, 0, 0, 0.5);
 }
 
+.black-territory {
+  fill: rgba(0, 0, 0, 0.5);
+  stroke: none;
+  pointer-events: all;
+}
+
+.white-territory {
+  fill: rgba(255, 255, 255, 0.5);
+  stroke: none;
+  pointer-events: all;
+}
+
 .container {
   display: grid;
   grid-template-columns: 1fr 3fr;
@@ -57,6 +69,10 @@ hr {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.game-board {
+  cursor: none;
 }
 
 button {
