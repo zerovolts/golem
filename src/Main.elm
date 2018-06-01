@@ -23,7 +23,7 @@ init : ( Model, Cmd Msg )
 init =
     ( { board = newBoard 19
       , territories = EverySet.empty
-      , gameType = Local
+      , gameType = Computer { player = Black }
       , history = []
       , turn = Black
       , turnCount = 1

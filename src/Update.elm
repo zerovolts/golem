@@ -1,10 +1,12 @@
 module Update exposing (..)
 
+import Delay
 import Game exposing (findAllTerritories, oppositeColor, placeStone)
 import Model exposing (Board, GameStatus(..), GameType(..), Model, Stone(..))
 import Msg exposing (Msg(..))
 import Point exposing (Point)
 import Random
+import Time
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -19,7 +21,7 @@ update msg model =
                     ( placeStoneIfPlayer player point model, Cmd.none )
 
                 Computer { player } ->
-                    update ComputerMove (placeStoneIfPlayer player point model)
+                    ( placeStoneIfPlayer player point model, Delay.after 500 Time.millisecond ComputerMove )
 
         -- only used for Computer or Online games
         EnemyPlaceStone point ->
