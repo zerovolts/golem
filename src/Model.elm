@@ -21,6 +21,12 @@ type GameStatus
     | Over
 
 
+type GameType
+    = Local
+    | Computer { player : Stone }
+    | Online { player : Stone }
+
+
 type alias History =
     List Turn
 
@@ -38,6 +44,7 @@ type alias Territory =
 type alias Model =
     { board : Board
     , territories : EverySet Territory
+    , gameType : GameType
     , history : History
     , turn : Stone
     , turnCount : Int

@@ -90,9 +90,14 @@ removeChain points board =
     List.foldl (\point board -> removeStone point board) board (EverySet.toList points)
 
 
-placeStoneNoChecks : Stone -> Point -> Board -> Board
-placeStoneNoChecks stone point board =
-    Grid.set point (Just stone) board
+placeStoneIfFree : Stone -> Point -> Board -> Maybe Board
+placeStoneIfFree stone point board =
+    case getStone point board of
+        Nothing ->
+            Just (Grid.set point (Just stone) board)
+
+        _ ->
+            Nothing
 
 
 oppositeColor : Stone -> Stone
@@ -149,9 +154,9 @@ TODO: Prevent Ko
 placeStone : Stone -> Point -> Board -> Maybe Board
 placeStone stone point board =
     board
-        |> placeStoneNoChecks stone point
-        |> removeAdjacentCaptured point
-        |> preventSuicide point
+        |> placeStoneIfFree stone point
+        |> Maybe.map (removeAdjacentCaptured point)
+        |> Maybe.andThen (preventSuicide point)
 
 
 determineOwner : ( List Stone, List Stone ) -> Maybe Stone

@@ -48,7 +48,10 @@ sideBar model =
                 div [] [ Html.text ("Game Over! " ++ winString blackTerritory whiteTerritory) ]
 
             _ ->
-                Html.button [ onClick Pass ] [ Html.text "Pass" ]
+                div []
+                    [ Html.button [ onClick ComputerMove ] [ Html.text "Computer" ]
+                    , Html.button [ onClick Pass ] [ Html.text "Pass" ]
+                    ]
         ]
 
 
