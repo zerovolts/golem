@@ -1,7 +1,8 @@
 module Model exposing (..)
 
-import Array exposing (Array)
 import EverySet exposing (EverySet)
+import Grid exposing (Grid)
+import Point exposing (Point)
 
 
 type Stone
@@ -24,12 +25,8 @@ type alias History =
     List Turn
 
 
-type alias Point =
-    ( Int, Int )
-
-
 type alias Board =
-    Array (Array (Maybe Stone))
+    Grid (Maybe Stone)
 
 
 type alias Territory =

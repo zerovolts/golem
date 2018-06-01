@@ -1,7 +1,7 @@
 module Update exposing (..)
 
 import Game exposing (findAllTerritories, oppositeColor, placeStone)
-import Model exposing (Board, GameStatus(..), Model, Point, Stone(..))
+import Model exposing (Board, GameStatus(..), Model, Stone(..))
 import Msg exposing (Msg(..))
 
 

@@ -2,29 +2,21 @@ module Game exposing (..)
 
 import Array
 import EverySet exposing (EverySet)
-import Helpers exposing (getAllCombinations)
-import Model exposing (Board, Point, Stone(..), Territory)
+import Grid exposing (Grid)
+import Model exposing (Board, Stone(..), Territory)
+import Point exposing (Point)
+import Util
 
 
 newBoard : Int -> Board
 newBoard size =
-    Array.initialize size
-        (\_ ->
-            Array.initialize size
-                (\_ ->
-                    Nothing
-                )
-        )
+    Grid.initialize ( size, size ) (always Nothing)
 
 
 getStone : Point -> Board -> Maybe Stone
-getStone ( x, y ) board =
-    Array.get x board
-        |> Maybe.andThen
-            (\col ->
-                Array.get y col
-                    |> Maybe.withDefault Nothing
-            )
+getStone point board =
+    Grid.get point board
+        |> Maybe.withDefault Nothing
 
 
 {-| Given a position, returns a list of all positions connected to it.
@@ -35,20 +27,15 @@ findChain point board =
 
 
 findChainIntermediate : Point -> Maybe Stone -> Board -> EverySet Point -> EverySet Point
-findChainIntermediate ( x, y ) stone board set =
+findChainIntermediate point stone board set =
     if
-        (getStone ( x, y ) board == stone)
-            && not (EverySet.member ( x, y ) set)
-            && (x >= 0)
-            && (y >= 0)
-            && (x < Array.length board)
-            && (y < Array.length board)
+        (getStone point board == stone)
+            && not (EverySet.member point set)
+            && Grid.inBounds point board
     then
-        EverySet.insert ( x, y ) set
-            |> findChainIntermediate ( x + 1, y ) stone board
-            |> findChainIntermediate ( x - 1, y ) stone board
-            |> findChainIntermediate ( x, y + 1 ) stone board
-            |> findChainIntermediate ( x, y - 1 ) stone board
+        List.foldl (\neighbor set -> findChainIntermediate neighbor stone board set)
+            (EverySet.insert point set)
+            (Point.neighbors point)
     else
         set
 
@@ -72,26 +59,18 @@ findChainLiberties points board =
 {-| Given a position, returns the set of adjacent liberties
 -}
 findStoneLiberties : Point -> Board -> EverySet Point
-findStoneLiberties ( x, y ) board =
-    EverySet.empty
-        |> addIfEmpty ( x + 1, y ) board
-        |> addIfEmpty ( x - 1, y ) board
-        |> addIfEmpty ( x, y + 1 ) board
-        |> addIfEmpty ( x, y - 1 ) board
+findStoneLiberties point board =
+    List.foldl (\neighbor set -> addIfEmpty neighbor board set)
+        EverySet.empty
+        (Point.neighbors point)
 
 
 {-| Given a point and a set, add the point to the set if that point is empty and in-bounds
 -}
 addIfEmpty : Point -> Board -> EverySet Point -> EverySet Point
-addIfEmpty ( x, y ) board set =
-    if
-        (getStone ( x, y ) board == Nothing)
-            && (x >= 0)
-            && (y >= 0)
-            && (x < Array.length board)
-            && (y < Array.length board)
-    then
-        EverySet.insert ( x, y ) set
+addIfEmpty point board set =
+    if (getStone point board == Nothing) && Grid.inBounds point board then
+        EverySet.insert point set
     else
         set
 
@@ -112,13 +91,8 @@ removeChain points board =
 
 
 placeStoneNoChecks : Stone -> Point -> Board -> Board
-placeStoneNoChecks stone ( x, y ) board =
-    case Array.get x board of
-        Just row ->
-            Array.set x (Array.set y (Just stone) row) board
-
-        Nothing ->
-            board
+placeStoneNoChecks stone point board =
+    Grid.set point (Just stone) board
 
 
 oppositeColor : Stone -> Stone
@@ -132,12 +106,12 @@ oppositeColor stone =
 
 
 getAdjacentEnemyStones : Point -> Board -> EverySet Point
-getAdjacentEnemyStones ( x, y ) board =
+getAdjacentEnemyStones point board =
     let
         enemyColor =
-            Maybe.map oppositeColor (getStone ( x, y ) board)
+            Maybe.map oppositeColor (getStone point board)
     in
-    [ ( x + 1, y ), ( x - 1, y ), ( x, y + 1 ), ( x, y - 1 ) ]
+    Point.neighbors point
         |> EverySet.fromList
         |> EverySet.filter (\point -> getStone point board == enemyColor)
 
@@ -223,6 +197,9 @@ findTerritoryOwner points board =
         |> determineOwner
 
 
+{-| possibly combine this with "findChainLiberties"
+only difference is "findPointBoundaries" rather than "findStoneLiberties"
+-}
 findTerritoryBoundaries : EverySet Point -> Board -> EverySet Point
 findTerritoryBoundaries points board =
     points
@@ -232,27 +209,23 @@ findTerritoryBoundaries points board =
         |> EverySet.fromList
 
 
+{-| possibly combine this with "findStoneLiberties"
+only difference is "addIfStone" rather than "addIfEmpty"
+-}
 findPointBoundaries : Point -> Board -> EverySet Point
-findPointBoundaries ( x, y ) board =
-    EverySet.empty
-        |> addIfStone ( x + 1, y ) board
-        |> addIfStone ( x - 1, y ) board
-        |> addIfStone ( x, y + 1 ) board
-        |> addIfStone ( x, y - 1 ) board
+findPointBoundaries point board =
+    List.foldl (\neighbor set -> addIfStone neighbor board set)
+        EverySet.empty
+        (Point.neighbors point)
 
 
-{-| Possibly combine this with "addIfEmpty"
+{-| possibly combine this with "addIfEmpty"
+only difference is "/= Nothing" rather than "== Nothing"
 -}
 addIfStone : Point -> Board -> EverySet Point -> EverySet Point
-addIfStone ( x, y ) board set =
-    if
-        (getStone ( x, y ) board /= Nothing)
-            && (x >= 0)
-            && (y >= 0)
-            && (x < Array.length board)
-            && (y < Array.length board)
-    then
-        EverySet.insert ( x, y ) set
+addIfStone point board set =
+    if (getStone point board /= Nothing) && Grid.inBounds point board then
+        EverySet.insert point set
     else
         set
 
@@ -281,7 +254,6 @@ getPointTerritory point territories =
 
 
 {-| generate all territories from the board state
-possibly store the territories in the model and
 -}
 findAllTerritories : Board -> EverySet Territory
 findAllTerritories board =
@@ -293,15 +265,7 @@ findAllTerritories board =
                 EverySet.insert (findTerritory point board) territories
         )
         EverySet.empty
-        (getAllCombinations (List.range 0 18))
-
-
-
-{-
-   - before placing a stone, find the chain of the selected intersection.
-   - calculate the areas for the intersections adjacent to the placed stone.
-   - remove the first chain from the model, then add the new ones
--}
+        (Util.getAllCombinations (List.range 0 18))
 
 
 territoryCount : Stone -> EverySet Territory -> Int

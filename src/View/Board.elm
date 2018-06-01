@@ -4,12 +4,13 @@ import Array exposing (Array)
 import Constants exposing (boardPadding, stonePadding, stoneRadius, stoneSize)
 import EverySet exposing (EverySet)
 import Game exposing (getPointTerritory)
-import Helpers exposing (getAllCombinations)
 import Html.Events exposing (onClick)
-import Model exposing (Board, Model, Point, Stone(..), Territory)
+import Model exposing (Board, Model, Stone(..), Territory)
 import Msg exposing (Msg(..))
+import Point exposing (Point)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
+import Util
 
 
 drawBoard : Board -> EverySet Territory -> Svg Msg
@@ -176,4 +177,4 @@ drawDots board =
     in
     List.map
         (\point -> drawDot point)
-        (getAllCombinations [ 3, boardLen // 2, boardLen - 3 ])
+        (Util.getAllCombinations [ 3, boardLen // 2, boardLen - 3 ])

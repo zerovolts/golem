@@ -1,4 +1,4 @@
-module Helpers exposing (..)
+module Util exposing (..)
 
 
 getAllCombinations : List a -> List ( a, a )

@@ -3,11 +3,11 @@ module View exposing (..)
 import Game exposing (territoryCount)
 import Html exposing (..)
 import Html.Events exposing (onClick)
-import Model exposing (Board, GameStatus(..), Model, Point, Stone(..))
+import Model exposing (Board, GameStatus(..), Model, Stone(..))
 import Msg exposing (Msg(..))
 import Svg.Attributes exposing (..)
 import View.Board exposing (drawBoard)
-import View.Helpers exposing (stylesheet)
+import View.Util exposing (stylesheet)
 
 
 view : Model -> Html Msg

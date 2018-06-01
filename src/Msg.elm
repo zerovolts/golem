@@ -1,6 +1,6 @@
 module Msg exposing (..)
 
-import Model exposing (Point)
+import Point exposing (Point)
 
 
 type Msg

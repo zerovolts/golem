@@ -1,4 +1,4 @@
-module View.Helpers exposing (..)
+module View.Util exposing (..)
 
 import Html exposing (Html)
 import Html.Attributes exposing (href, rel)
