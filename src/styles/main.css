@@ -42,18 +42,18 @@ hr {
   pointer-events: all;
 }
 
-.empty-space:hover {
-  fill: rgba(0, 0, 0, 0.5);
+.intersection:hover {
+  fill: rgba(0, 0, 0, 0.6);
 }
 
 .black-territory {
-  fill: rgba(0, 0, 0, 0.5);
+  fill: rgba(0, 0, 0, 0.3);
   stroke: none;
   pointer-events: all;
 }
 
 .white-territory {
-  fill: rgba(255, 255, 255, 0.5);
+  fill: rgba(255, 255, 255, 0.3);
   stroke: none;
   pointer-events: all;
 }
@@ -73,6 +73,10 @@ hr {
 
 .game-board {
   cursor: none;
+}
+
+.stone {
+  pointer-events: none;
 }
 
 button {

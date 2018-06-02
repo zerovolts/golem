@@ -54,13 +54,24 @@ drawStone : Maybe Stone -> Point -> EverySet Territory -> Svg Msg
 drawStone maybeStone ( x, y ) territories =
     case maybeStone of
         Just stone ->
-            circle
-                [ cx (toString (x * stoneSize + stoneSize + stoneRadius + 2))
-                , cy (toString (y * stoneSize + stoneSize + stoneRadius + 2))
-                , r (toString stoneRadius)
-                , Svg.Attributes.style ("fill: " ++ colorToHex stone)
+            g []
+                [ rect
+                    [ Svg.Attributes.x (toString (x * stoneSize + stoneSize))
+                    , Svg.Attributes.y (toString (y * stoneSize + stoneSize))
+                    , width (toString stoneSize)
+                    , height (toString stoneSize)
+                    , class "intersection empty-space"
+                    ]
+                    []
+                , circle
+                    [ cx (toString (x * stoneSize + stoneSize + stoneRadius + 2))
+                    , cy (toString (y * stoneSize + stoneSize + stoneRadius + 2))
+                    , r (toString stoneRadius)
+                    , Svg.Attributes.style ("fill: " ++ colorToHex stone)
+                    , class "stone"
+                    ]
+                    []
                 ]
-                []
 
         Nothing ->
             rect
@@ -68,7 +79,7 @@ drawStone maybeStone ( x, y ) territories =
                 , Svg.Attributes.y (toString (y * stoneSize + stoneSize))
                 , width (toString stoneSize)
                 , height (toString stoneSize)
-                , class (drawTerritory ( x, y ) territories)
+                , class ("intersection " ++ drawTerritory ( x, y ) territories)
                 , onClick (PlaceStone ( x, y ))
                 ]
                 []

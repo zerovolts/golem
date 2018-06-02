@@ -18,7 +18,7 @@ view model =
             [ class "horizontal-container" ]
             [ div [ class "vertical-container" ]
                 [ stylesheet "main"
-                , drawBoard model.board model.territories
+                , drawBoard model.game.board model.game.territories
                 ]
             ]
         ]
@@ -28,22 +28,22 @@ sideBar : Model -> Html Msg
 sideBar model =
     let
         blackTerritory =
-            territoryCount Black model.territories
+            territoryCount Black model.game.territories
 
         whiteTerritory =
-            territoryCount White model.territories
+            territoryCount White model.game.territories
     in
     div
         [ class "side-bar" ]
         [ div []
             [ h2 [] [ Html.text "囲碁：Golem" ]
             , hr [] []
-            , kvPair "Turn Counter" (toString model.turnCount)
-            , kvPair "Turn" (toString model.turn)
+            , kvPair "Turn Counter" (toString model.game.turnCount)
+            , kvPair "Turn" (toString model.game.turn)
             , kvPair "Black Territory" (toString blackTerritory)
             , kvPair "White Territory" (toString whiteTerritory)
             ]
-        , case model.gameStatus of
+        , case model.game.gameStatus of
             Over ->
                 div [] [ Html.text ("Game Over! " ++ winString blackTerritory whiteTerritory) ]
 
