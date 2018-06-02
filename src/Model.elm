@@ -41,12 +41,24 @@ type alias Territory =
     }
 
 
-type alias Model =
+type alias Game =
     { board : Board
-    , territories : EverySet Territory
-    , gameType : GameType
     , history : History
+    , territories : EverySet Territory
     , turn : Stone
     , turnCount : Int
     , gameStatus : GameStatus
+    }
+
+
+type alias GameOptions =
+    { gameType : GameType
+    , preferredColor : Stone
+    , boardSize : Point
+    }
+
+
+type alias Model =
+    { game : Game
+    , gameType : GameType
     }

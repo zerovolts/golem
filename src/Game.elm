@@ -1,6 +1,6 @@
 module Game exposing (..)
 
-import Array
+import Array exposing (Array)
 import EverySet exposing (EverySet)
 import Grid exposing (Grid)
 import Model exposing (Board, Stone(..), Territory)
@@ -17,6 +17,13 @@ getStone : Point -> Board -> Maybe Stone
 getStone point board =
     Grid.get point board
         |> Maybe.withDefault Nothing
+
+
+getEmptyPoints : Board -> Array Point
+getEmptyPoints board =
+    Util.getAllCombinations (List.range 0 18)
+        |> List.filter (\point -> getStone point board == Nothing)
+        |> Array.fromList
 
 
 {-| Given a position, returns a list of all positions connected to it.

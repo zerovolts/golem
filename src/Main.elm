@@ -3,8 +3,9 @@ module Main exposing (..)
 import EverySet
 import Game exposing (newBoard)
 import Html
-import Model exposing (Board, GameStatus(..), GameType(..), Model, Stone(..))
+import Model exposing (Board, Game, GameStatus(..), GameType(..), Model, Stone(..))
 import Msg exposing (Msg(..))
+import Point exposing (Point)
 import Update exposing (update)
 import View exposing (view)
 
@@ -21,13 +22,19 @@ main =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { board = newBoard 19
-      , territories = EverySet.empty
-      , gameType = Computer { player = Black }
-      , history = []
-      , turn = Black
-      , turnCount = 1
-      , gameStatus = Playing
+    ( { game = initializeGame 19 Black
+      , gameType = Computer { player = White }
       }
     , Cmd.none
     )
+
+
+initializeGame : Int -> Stone -> Game
+initializeGame boardSize playerColor =
+    { board = newBoard boardSize
+    , territories = EverySet.empty
+    , history = []
+    , turn = Black
+    , turnCount = 1
+    , gameStatus = Playing
+    }
