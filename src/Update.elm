@@ -3,7 +3,7 @@ module Update exposing (..)
 import Array
 import Delay
 import Game exposing (findAllTerritories, oppositeColor, placeStone)
-import Model exposing (Board, Game, GameStatus(..), GameType(..), Model, Stone(..))
+import Model exposing (Board, Game, GameStatus(..), GameType(..), Model, Page(..), Stone(..))
 import Msg exposing (Msg(..))
 import Point exposing (Point)
 import Random exposing (Generator)
@@ -14,95 +14,123 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
         game =
-            gameUpdate msg model
-    in
-    ( { model | game = Tuple.first game }, Tuple.second game )
-
-
-gameUpdate : Msg -> Model -> ( Game, Cmd Msg )
-gameUpdate msg model =
-    let
-        game =
             model.game
+
+        gameOptions =
+            model.gameOptions
     in
     case msg of
         PlaceStone point ->
-            case model.gameType of
+            case model.gameOptions.gameType of
                 Local ->
-                    ( placeStoneCmd point game, Cmd.none )
+                    ( placeStoneCmd point model, Cmd.none )
 
-                Online { player } ->
-                    ( placeStoneIfPlayer player point game, Cmd.none )
+                Online ->
+                    ( placeStoneIfPlayer game.player point model, Cmd.none )
 
-                Computer { player } ->
-                    ( placeStoneIfPlayer player point game
+                Computer ->
+                    ( placeStoneIfPlayer game.player point model
                     , Delay.after 500 Time.millisecond ComputerMove
                     )
 
         -- only used for Computer or Online games
         EnemyPlaceStone point ->
-            case model.gameType of
+            case model.gameOptions.gameType of
                 Local ->
-                    ( game, Cmd.none )
+                    ( model, Cmd.none )
 
-                Online { player } ->
-                    ( placeStoneIfPlayer (oppositeColor player) point game, Cmd.none )
+                Online ->
+                    ( placeStoneIfPlayer (oppositeColor game.player) point model, Cmd.none )
 
-                Computer { player } ->
-                    ( placeStoneIfPlayer (oppositeColor player) point game, Cmd.none )
+                Computer ->
+                    ( placeStoneIfPlayer (oppositeColor game.player) point model, Cmd.none )
 
         Pass ->
-            ( { game
-                | turn = oppositeColor game.turn
-                , history = Model.Pass :: game.history
-                , turnCount = game.turnCount + 1
-                , gameStatus =
-                    if game.gameStatus == Playing then
-                        OnePass
-                    else
-                        Over
+            ( { model
+                | game =
+                    { game
+                        | turn = oppositeColor game.turn
+                        , history = Model.Pass :: game.history
+                        , turnCount = game.turnCount + 1
+                        , gameStatus =
+                            if game.gameStatus == Playing then
+                                OnePass
+                            else
+                                Over
+                    }
               }
             , Cmd.none
             )
 
         EndTurn ->
-            ( { game
-                | turn = oppositeColor game.turn
-                , turnCount = game.turnCount + 1
+            ( { model
+                | game =
+                    { game
+                        | turn = oppositeColor game.turn
+                        , turnCount = game.turnCount + 1
+                    }
               }
             , Cmd.none
             )
 
         ComputerMove ->
-            ( game, Random.generate EnemyPlaceStone (randomEmptyPoint game.board) )
+            ( model, Random.generate EnemyPlaceStone (randomEmptyPoint game.board) )
+
+        StartGame ->
+            ( { model
+                | game =
+                    { game
+                        | player = gameOptions.preferredColor
+                        , board = Game.newBoard gameOptions.boardSize
+                    }
+                , page = GameScreen
+              }
+            , if gameOptions.gameType == Computer && gameOptions.preferredColor == White then
+                Delay.after 500 Time.millisecond ComputerMove
+              else
+                Cmd.none
+            )
+
+        ChangeGameType gameType ->
+            ( { model | gameOptions = { gameOptions | gameType = gameType } }, Cmd.none )
+
+        ChangeColor stone ->
+            ( { model | gameOptions = { gameOptions | preferredColor = stone } }, Cmd.none )
 
 
-placeStoneCmd : Point -> Game -> Game
-placeStoneCmd point game =
+placeStoneCmd : Point -> Model -> Model
+placeStoneCmd point model =
+    let
+        game =
+            model.game
+    in
     if game.gameStatus /= Over then
         case placeStone game.turn point game.board of
             Just board ->
-                { game
-                    | board = board
-                    , territories = findAllTerritories board
-                    , history = Model.PlaceStone point :: game.history
-                    , turn = oppositeColor game.turn
-                    , turnCount = game.turnCount + 1
-                    , gameStatus = Playing
+                { model
+                    | game =
+                        { game
+                            | board = board
+                            , territories = findAllTerritories board
+                            , history = Model.PlaceStone point :: game.history
+                            , turn = oppositeColor game.turn
+                            , turnCount = game.turnCount + 1
+                            , gameStatus = Playing
+                        }
                 }
 
             Nothing ->
-                game
+                model
     else
-        game
+        model
 
 
-placeStoneIfPlayer : Stone -> Point -> Game -> Game
-placeStoneIfPlayer stone point game =
-    if stone == game.turn then
-        placeStoneCmd point game
+placeStoneIfPlayer : Stone -> Point -> Model -> Model
+placeStoneIfPlayer stone point model =
+    if stone == model.game.turn then
+        placeStoneCmd point model
     else
-        game
+        model
 
 
 {-| TODO: if there are no empty spaces, this will return (0, 0)

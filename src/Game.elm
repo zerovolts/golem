@@ -8,9 +8,9 @@ import Point exposing (Point)
 import Util
 
 
-newBoard : Int -> Board
+newBoard : Point -> Board
 newBoard size =
-    Grid.initialize ( size, size ) (always Nothing)
+    Grid.initialize size (always Nothing)
 
 
 getStone : Point -> Board -> Maybe Stone

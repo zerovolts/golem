@@ -1,6 +1,6 @@
 module Msg exposing (..)
 
-import Model exposing (Stone(..))
+import Model exposing (GameType, Stone(..))
 import Point exposing (Point)
 
 
@@ -10,3 +10,6 @@ type Msg
     | Pass
     | EndTurn
     | ComputerMove
+    | StartGame
+    | ChangeGameType GameType
+    | ChangeColor Stone

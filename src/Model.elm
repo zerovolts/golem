@@ -23,8 +23,8 @@ type GameStatus
 
 type GameType
     = Local
-    | Computer { player : Stone }
-    | Online { player : Stone }
+    | Computer
+    | Online
 
 
 type alias History =
@@ -41,6 +41,11 @@ type alias Territory =
     }
 
 
+type Page
+    = MainMenu
+    | GameScreen
+
+
 type alias Game =
     { board : Board
     , history : History
@@ -48,6 +53,7 @@ type alias Game =
     , turn : Stone
     , turnCount : Int
     , gameStatus : GameStatus
+    , player : Stone
     }
 
 
@@ -60,5 +66,6 @@ type alias GameOptions =
 
 type alias Model =
     { game : Game
-    , gameType : GameType
+    , gameOptions : GameOptions
+    , page : Page
     }
