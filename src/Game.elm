@@ -35,7 +35,9 @@ getStone point board =
 
 getEmptyPoints : Board -> Array Point
 getEmptyPoints board =
-    Util.getAllCombinations (List.range 0 18)
+    Util.getAllGridCombinations
+        (List.range 0 (Grid.width board - 1))
+        (List.range 0 (Grid.height board - 1))
         |> List.filter (\point -> getStone point board == Nothing)
         |> Array.fromList
 
