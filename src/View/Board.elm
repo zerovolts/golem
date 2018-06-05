@@ -184,9 +184,27 @@ drawDot ( x, y ) =
 drawDots : Board -> List (Svg Msg)
 drawDots board =
     let
-        boardLen =
-            Array.length board - 1
+        width =
+            Grid.width board - 1
+
+        height =
+            Grid.height board - 1
+
+        paddingX =
+            if width > 9 then
+                3
+            else
+                2
+
+        paddingY =
+            if height > 9 then
+                3
+            else
+                2
     in
     List.map
         (\point -> drawDot point)
-        (Util.getAllCombinations [ 3, boardLen // 2, boardLen - 3 ])
+        (Util.getAllGridCombinations
+            [ paddingX, width // 2, width - paddingX ]
+            [ paddingY, height // 2, height - paddingY ]
+        )
