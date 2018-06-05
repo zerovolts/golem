@@ -4,6 +4,7 @@ import Array exposing (Array)
 import Constants exposing (boardPadding, stonePadding, stoneRadius, stoneSize)
 import EverySet exposing (EverySet)
 import Game exposing (getPointTerritory)
+import Grid
 import Html.Events exposing (onClick)
 import Model exposing (Board, Model, Stone(..), Territory)
 import Msg exposing (Msg(..))
@@ -17,8 +18,8 @@ drawBoard : Board -> EverySet Territory -> Svg Msg
 drawBoard board territories =
     svg
         [ class "game-board"
-        , width (toString (Array.length board * stoneSize + (stoneSize * 2)))
-        , height (toString (Array.length board * stoneSize + (stoneSize * 2)))
+        , width (toString (Grid.width board * stoneSize + (stoneSize * 2)))
+        , height (toString (Grid.height board * stoneSize + (stoneSize * 2)))
         ]
         ([ drawBoardBackground board ]
             ++ drawLines board
@@ -121,8 +122,8 @@ drawBoardBackground board =
     rect
         [ x "0"
         , y "0"
-        , width (toString (Array.length board * stoneSize + (stoneSize * 2)))
-        , height (toString (Array.length board * stoneSize + (stoneSize * 2)))
+        , width (toString (Grid.width board * stoneSize + (stoneSize * 2)))
+        , height (toString (Grid.height board * stoneSize + (stoneSize * 2)))
         , fill "#da5"
         ]
         []
@@ -133,7 +134,7 @@ drawVerticalLine board y =
     line
         [ x1 (toString boardPadding)
         , y1 (toString (y * stoneSize + boardPadding))
-        , x2 (toString (Array.length board * stoneSize + stoneRadius + stonePadding))
+        , x2 (toString (Grid.width board * stoneSize + stoneRadius + stonePadding))
         , y2 (toString (y * stoneSize + boardPadding))
         , stroke "#333"
         ]
@@ -146,7 +147,7 @@ drawHorizontalLine board y =
         [ x1 (toString (y * stoneSize + boardPadding))
         , y1 (toString boardPadding)
         , x2 (toString (y * stoneSize + boardPadding))
-        , y2 (toString (Array.length board * stoneSize + stoneRadius + stonePadding))
+        , y2 (toString (Grid.height board * stoneSize + stoneRadius + stonePadding))
         , stroke "#333"
         ]
         []
@@ -154,14 +155,14 @@ drawHorizontalLine board y =
 
 drawLines : Board -> List (Svg Msg)
 drawLines board =
-    (Array.toList (Array.initialize (Array.length board) identity)
+    (Array.toList (Array.initialize (Grid.height board) identity)
         |> List.map
             (\x ->
                 drawVerticalLine board x
             )
     )
         ++ (Array.toList
-                (Array.initialize (Array.length board) identity)
+                (Array.initialize (Grid.width board) identity)
                 |> List.map
                     (\x ->
                         drawHorizontalLine board x

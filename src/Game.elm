@@ -3,14 +3,28 @@ module Game exposing (..)
 import Array exposing (Array)
 import EverySet exposing (EverySet)
 import Grid exposing (Grid)
-import Model exposing (Board, Stone(..), Territory)
+import Model exposing (Board, BoardSize(..), Stone(..), Territory)
 import Point exposing (Point)
 import Util
 
 
-newBoard : Point -> Board
-newBoard size =
-    Grid.initialize size (always Nothing)
+newBoard : BoardSize -> Board
+newBoard boardSize =
+    Grid.initialize
+        (case boardSize of
+            Standard ->
+                ( 19, 19 )
+
+            Small ->
+                ( 13, 13 )
+
+            Beginner ->
+                ( 9, 9 )
+
+            Custom boardSize ->
+                ( 9, 19 )
+        )
+        (always Nothing)
 
 
 getStone : Point -> Board -> Maybe Stone

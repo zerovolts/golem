@@ -46,6 +46,13 @@ type Page
     | GameScreen
 
 
+type BoardSize
+    = Standard
+    | Small
+    | Beginner
+    | Custom Point
+
+
 type alias Game =
     { board : Board
     , history : History
@@ -60,7 +67,7 @@ type alias Game =
 type alias GameOptions =
     { gameType : GameType
     , preferredColor : Stone
-    , boardSize : Point
+    , boardSize : BoardSize
     }
 
 

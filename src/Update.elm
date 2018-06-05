@@ -3,7 +3,7 @@ module Update exposing (..)
 import Array
 import Delay
 import Game exposing (findAllTerritories, oppositeColor, placeStone)
-import Model exposing (Board, Game, GameStatus(..), GameType(..), Model, Page(..), Stone(..))
+import Model exposing (Board, BoardSize(..), Game, GameStatus(..), GameType(..), Model, Page(..), Stone(..))
 import Msg exposing (Msg(..))
 import Point exposing (Point)
 import Random exposing (Generator)
@@ -96,6 +96,16 @@ update msg model =
 
         ChangeColor stone ->
             ( { model | gameOptions = { gameOptions | preferredColor = stone } }, Cmd.none )
+
+        ChangeBoardSize boardPreset ->
+            ( { model
+                | gameOptions =
+                    { gameOptions
+                        | boardSize = boardPreset
+                    }
+              }
+            , Cmd.none
+            )
 
 
 placeStoneCmd : Point -> Model -> Model

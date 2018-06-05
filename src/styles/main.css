@@ -10,7 +10,7 @@
 
 body {
   font-family: Ubuntu;
-  background: var(--black);
+  background: var(--light-black);
   color: var(--white);
   line-height: 1.5rem;
 }
@@ -79,7 +79,7 @@ hr {
 }
 
 .side-bar {
-  background: var(--dark-black);
+  background: var(--black);
   padding: 1rem;
   display: flex;
   flex-direction: column;

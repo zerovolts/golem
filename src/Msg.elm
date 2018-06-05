@@ -1,6 +1,6 @@
 module Msg exposing (..)
 
-import Model exposing (GameType, Stone(..))
+import Model exposing (BoardSize, GameType, Stone(..))
 import Point exposing (Point)
 
 
@@ -13,3 +13,4 @@ type Msg
     | StartGame
     | ChangeGameType GameType
     | ChangeColor Stone
+    | ChangeBoardSize BoardSize

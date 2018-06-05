@@ -4,7 +4,7 @@ import Game exposing (territoryCount)
 import Html exposing (..)
 import Html.Attributes
 import Html.Events exposing (onClick)
-import Model exposing (Board, Game, GameOptions, GameStatus(..), GameType(..), Model, Page(..), Stone(..))
+import Model exposing (Board, BoardSize(..), Game, GameOptions, GameStatus(..), GameType(..), Model, Page(..), Stone(..))
 import Msg exposing (Msg(..))
 import Svg.Attributes exposing (..)
 import View.Board exposing (drawBoard)
@@ -35,10 +35,20 @@ viewMainMenu gameOptions =
                     , ( "Computer", ChangeGameType Computer )
                     , ( "Online", ChangeGameType Online )
                     ]
-                , radio "preferred-color"
-                    (toString gameOptions.preferredColor)
-                    [ ( "Black", ChangeColor Black )
-                    , ( "White", ChangeColor White )
+                , if gameOptions.gameType /= Local then
+                    radio "preferred-color"
+                        (toString gameOptions.preferredColor)
+                        [ ( "Black", ChangeColor Black )
+                        , ( "White", ChangeColor White )
+                        ]
+                  else
+                    div [] []
+                , radio "board-size"
+                    (toString gameOptions.boardSize)
+                    [ ( "Standard", ChangeBoardSize Standard )
+                    , ( "Small", ChangeBoardSize Small )
+                    , ( "Beginner", ChangeBoardSize Beginner )
+                    , ( "Custom", ChangeBoardSize (Custom ( 19, 9 )) )
                     ]
                 , Html.button [ onClick StartGame ] [ Html.text "Start Game!" ]
                 ]

@@ -3,7 +3,7 @@ module Main exposing (..)
 import EverySet
 import Game exposing (newBoard)
 import Html
-import Model exposing (Board, Game, GameOptions, GameStatus(..), GameType(..), Model, Page(..), Stone(..))
+import Model exposing (Board, BoardSize(..), Game, GameOptions, GameStatus(..), GameType(..), Model, Page(..), Stone(..))
 import Msg exposing (Msg(..))
 import Point exposing (Point)
 import Update exposing (update)
@@ -22,7 +22,7 @@ main =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { game = initializeGame ( 19, 19 ) Black
+    ( { game = initializeGame Standard Black
       , gameOptions = initializeGameOptions
       , page = MainMenu
       }
@@ -30,7 +30,7 @@ init =
     )
 
 
-initializeGame : Point -> Stone -> Game
+initializeGame : BoardSize -> Stone -> Game
 initializeGame boardSize playerColor =
     { board = newBoard boardSize
     , territories = EverySet.empty
@@ -46,5 +46,5 @@ initializeGameOptions : GameOptions
 initializeGameOptions =
     { gameType = Computer
     , preferredColor = Black
-    , boardSize = ( 19, 19 )
+    , boardSize = Standard
     }
