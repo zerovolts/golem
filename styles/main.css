@@ -1,8 +1,23 @@
+:root {
+  --blue: #3498db;
+  --dark-blue: #2980b9;
+  --black: #21252b;
+  --light-black: #282c34;
+  --white: #ddd;
+  --green: #34b46a;
+  --dark-green: #2b9959;
+}
+
 body {
   font-family: Ubuntu;
-  background: #282c34;
-  color: #ddd;
+  background: var(--light-black);
+  color: var(--white);
   line-height: 1.5rem;
+}
+
+h1 {
+  font-weight: normal;
+  font-size: 4rem;
 }
 
 h2 {
@@ -32,7 +47,7 @@ hr {
   display: flex;
   flex-direction: column;
   align-content: center;
-  justify-content: center;
+  justify-content: space-evenly;
   text-align: center;
 }
 
@@ -42,18 +57,18 @@ hr {
   pointer-events: all;
 }
 
-.empty-space:hover {
-  fill: rgba(0, 0, 0, 0.5);
+.intersection:hover {
+  fill: rgba(0, 0, 0, 0.6);
 }
 
 .black-territory {
-  fill: rgba(0, 0, 0, 0.5);
+  fill: rgba(0, 0, 0, 0.3);
   stroke: none;
   pointer-events: all;
 }
 
 .white-territory {
-  fill: rgba(255, 255, 255, 0.5);
+  fill: rgba(255, 255, 255, 0.3);
   stroke: none;
   pointer-events: all;
 }
@@ -64,7 +79,7 @@ hr {
 }
 
 .side-bar {
-  background: #21252b;
+  background: var(--black);
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -75,11 +90,16 @@ hr {
   cursor: none;
 }
 
+.stone {
+  pointer-events: none;
+}
+
 button {
-  color: #eee;
+  color: var(--white);
+  font-family: Ubuntu;
   border: none;
-  background: #3498db;
-  box-shadow: 0px 4px #2980b9;
+  background: var(--green);
+  box-shadow: 0px 4px var(--dark-green);
   user-select: none;
   position: relative;
   font-size: 1em;
@@ -93,11 +113,85 @@ button {
 }
 
 button:active {
-  box-shadow: 0px 0px #2980b9;
+  box-shadow: 0px 0px var(--dark-green);
   bottom: 0px;
   transition: bottom 0s, box-shadow 0s;
 }
 
 button:focus {
   outline: none;
+}
+
+input[type="text"],
+input[type="password"] {
+  margin: 1rem 0.5rem;
+  padding: 0.6rem 0.4rem 0.4rem 0.4rem;
+  font-size: 1rem;
+  font-family: Ubuntu;
+  border-radius: 0.3rem;
+  border: none;
+  box-shadow: inset 0px 4px #ccc;
+  color: #333;
+  width: 100%;
+}
+
+.text-input-icon {
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+}
+
+/* RADIO BUTTON */
+.radio-horizontal {
+  user-select: none;
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+.radio-horizontal > label {
+  border-left: 1px solid var(--dark-blue);
+}
+
+.radio-horizontal > label:first-of-type {
+  border-radius: 0.3rem 0em 0em 0.3rem;
+  border-left: none;
+}
+
+.radio-horizontal > label:last-of-type {
+  border-radius: 0em 0.3rem 0.3rem 0em;
+}
+
+input[type="radio"] + label {
+  cursor: pointer;
+  position: relative;
+  background: var(--blue);
+  box-shadow: 0 4px var(--dark-blue);
+  color: var(--white);
+  font-size: 1em;
+  padding: 0.5em 1em;
+  bottom: 4px;
+  margin: 0em;
+  transition: bottom 0.2s, box-shadow 0.2s, color 0.2s;
+}
+
+input[type="radio"]:checked + label {
+  background: var(--dark-blue);
+  color: var(--white);
+  box-shadow: 0 0 var(--dark-blue);
+  bottom: 0em;
+}
+
+input[type="radio"]:checked + label:not(:last-of-type) {
+  border-right: 1px solid var(--dark-blue);
+}
+
+input[type="radio"]:checked + label + input + label {
+  border-left: none;
+}
+
+fieldset {
+  border: none;
+  margin: 0.8rem;
 }
