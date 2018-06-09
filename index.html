@@ -10532,10 +10532,6 @@ var _elm_lang$svg$Svg_Attributes$additive = _elm_lang$virtual_dom$VirtualDom$att
 var _elm_lang$svg$Svg_Attributes$accumulate = _elm_lang$virtual_dom$VirtualDom$attribute('accumulate');
 var _elm_lang$svg$Svg_Attributes$accelerate = _elm_lang$virtual_dom$VirtualDom$attribute('accelerate');
 var _elm_lang$svg$Svg_Attributes$accentHeight = _elm_lang$virtual_dom$VirtualDom$attribute('accent-height');
-var _user$project$Constants$stonePadding = 2;
-var _user$project$Constants$stoneRadius = 12;
-var _user$project$Constants$stoneSize = (_user$project$Constants$stoneRadius * 2) + (_user$project$Constants$stonePadding * 2);
-var _user$project$Constants$boardPadding = (_user$project$Constants$stoneSize + _user$project$Constants$stoneRadius) + _user$project$Constants$stonePadding;
 var _user$project$Point$neighbors = function (_p0) {
 	var _p1 = _p0;
 	var _p3 = _p1._1;
@@ -11048,6 +11044,85 @@ var _user$project$Game$newBoard = function (boardSize) {
 		}(),
 		_elm_lang$core$Basics$always(_elm_lang$core$Maybe$Nothing));
 };
+var _user$project$Computer$findOpenNeighbors = F2(
+	function (point, board) {
+		return A2(
+			_elm_lang$core$Maybe$map,
+			_elm_lang$core$Array$fromList,
+			A2(
+				_elm_lang$core$Maybe$map,
+				function (prevPoint) {
+					return A2(
+						_elm_lang$core$List$filter,
+						function (point) {
+							return _elm_lang$core$Native_Utils.eq(
+								A2(_user$project$Game$getStone, point, board),
+								_elm_lang$core$Maybe$Nothing);
+						},
+						_user$project$Point$neighbors(prevPoint));
+				},
+				point));
+	});
+var _user$project$Computer$previousMove = function (history) {
+	var getPointFromTurn = function (turn) {
+		var _p0 = turn;
+		if (_p0.ctor === 'PlaceStone') {
+			return _elm_lang$core$Maybe$Just(_p0._0);
+		} else {
+			return _elm_lang$core$Maybe$Nothing;
+		}
+	};
+	return A2(
+		_elm_lang$core$Maybe$andThen,
+		getPointFromTurn,
+		A2(
+			_elm_lang$core$Maybe$andThen,
+			_elm_lang$core$List$head,
+			_elm_lang$core$List$tail(history)));
+};
+var _user$project$Computer$randomFortification = F3(
+	function (openNeighbors, openNeighborCount, game) {
+		return A2(
+			_elm_lang$core$Random$map,
+			function (index) {
+				return A2(
+					_elm_lang$core$Maybe$withDefault,
+					{ctor: '_Tuple2', _0: 0, _1: 0},
+					A2(
+						_elm_lang$core$Maybe$andThen,
+						_elm_lang$core$Array$get(index),
+						openNeighbors));
+			},
+			A2(_elm_lang$core$Random$int, 0, openNeighborCount));
+	});
+var _user$project$Computer$randomEmptyPoint = function (board) {
+	var emptyPoints = _user$project$Game$getEmptyPoints(board);
+	return A2(
+		_elm_lang$core$Random$map,
+		function (index) {
+			return A2(
+				_elm_lang$core$Maybe$withDefault,
+				{ctor: '_Tuple2', _0: 0, _1: 0},
+				A2(_elm_lang$core$Array$get, index, emptyPoints));
+		},
+		A2(
+			_elm_lang$core$Random$int,
+			0,
+			_elm_lang$core$Array$length(emptyPoints)));
+};
+var _user$project$Computer$computerMove = function (game) {
+	var openNeighbors = A2(
+		_user$project$Computer$findOpenNeighbors,
+		_user$project$Computer$previousMove(game.history),
+		game.board);
+	var openNeighborCount = _elm_lang$core$Array$length(
+		A2(_elm_lang$core$Maybe$withDefault, _elm_lang$core$Array$empty, openNeighbors)) - 1;
+	return (_elm_lang$core$Native_Utils.cmp(openNeighborCount, 1) > 0) ? A3(_user$project$Computer$randomFortification, openNeighbors, openNeighborCount, game) : _user$project$Computer$randomEmptyPoint(game.board);
+};
+var _user$project$Constants$stonePadding = 2;
+var _user$project$Constants$stoneRadius = 12;
+var _user$project$Constants$stoneSize = (_user$project$Constants$stoneRadius * 2) + (_user$project$Constants$stonePadding * 2);
+var _user$project$Constants$boardPadding = (_user$project$Constants$stoneSize + _user$project$Constants$stoneRadius) + _user$project$Constants$stonePadding;
 var _user$project$Msg$ChangeBoardSize = function (a) {
 	return {ctor: 'ChangeBoardSize', _0: a};
 };
@@ -11066,21 +11141,6 @@ var _user$project$Msg$EnemyPlaceStone = function (a) {
 };
 var _user$project$Msg$PlaceStone = function (a) {
 	return {ctor: 'PlaceStone', _0: a};
-};
-var _user$project$Update$randomEmptyPoint = function (board) {
-	var emptyPoints = _user$project$Game$getEmptyPoints(board);
-	return A2(
-		_elm_lang$core$Random$map,
-		function (index) {
-			return A2(
-				_elm_lang$core$Maybe$withDefault,
-				{ctor: '_Tuple2', _0: 0, _1: 0},
-				A2(_elm_lang$core$Array$get, index, emptyPoints));
-		},
-		A2(
-			_elm_lang$core$Random$int,
-			0,
-			_elm_lang$core$Array$length(emptyPoints)));
 };
 var _user$project$Update$placeStoneCmd = F2(
 	function (point, model) {
@@ -11213,7 +11273,7 @@ var _user$project$Update$update = F2(
 					_1: A2(
 						_elm_lang$core$Random$generate,
 						_user$project$Msg$EnemyPlaceStone,
-						_user$project$Update$randomEmptyPoint(game.board))
+						_user$project$Computer$computerMove(game))
 				};
 			case 'StartGame':
 				return {
