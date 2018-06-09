@@ -1,6 +1,7 @@
 module Update exposing (..)
 
 import Array exposing (Array)
+import Computer
 import Delay
 import Game exposing (findAllTerritories, oppositeColor, placeStone)
 import Model exposing (Board, BoardSize(..), Game, GameStatus(..), GameType(..), History, Model, Page(..), Stone(..), Turn)
@@ -74,7 +75,7 @@ update msg model =
             )
 
         ComputerMove ->
-            ( model, Random.generate EnemyPlaceStone (randomFortification game) )
+            ( model, Random.generate EnemyPlaceStone (Computer.computerMove game) )
 
         StartGame ->
             ( { model
@@ -141,78 +142,3 @@ placeStoneIfPlayer stone point model =
         placeStoneCmd point model
     else
         model
-
-
-{-| TODO: if there are no empty spaces, this will return (0, 0)
-in practice, the board should never be completely full, but it's worth fixing for completeness.
--}
-randomEmptyPoint : Board -> Generator Point
-randomEmptyPoint board =
-    let
-        emptyPoints =
-            Game.getEmptyPoints board
-    in
-    Random.map
-        (\index -> Maybe.withDefault ( 0, 0 ) (Array.get index emptyPoints))
-        (Random.int 0 (Array.length emptyPoints))
-
-
-previousMove : History -> Maybe Point
-previousMove history =
-    let
-        getPointFromTurn : Turn -> Maybe Point
-        getPointFromTurn =
-            \turn ->
-                case turn of
-                    Model.PlaceStone point ->
-                        Just point
-
-                    Model.Pass ->
-                        Nothing
-    in
-    history
-        |> List.tail
-        |> Maybe.andThen List.head
-        |> Maybe.andThen getPointFromTurn
-
-
-randomFortification : Game -> Generator Point
-randomFortification game =
-    let
-        openNeighbors : Maybe (Array Point)
-        openNeighbors =
-            previousMove game.history
-                |> Maybe.map
-                    (\prevPoint ->
-                        List.filter
-                            (\point -> Game.getStone point game.board == Nothing)
-                            (Point.neighbors prevPoint)
-                    )
-                |> Maybe.map Array.fromList
-
-        openNeighborCount : Int
-        openNeighborCount =
-            Array.length (Maybe.withDefault Array.empty openNeighbors) - 1
-    in
-    if openNeighborCount > 1 then
-        Random.map
-            (\index ->
-                Maybe.withDefault ( 0, 0 )
-                    (Maybe.andThen (Array.get index) openNeighbors)
-            )
-            (Random.int 0 openNeighborCount)
-    else
-        randomEmptyPoint game.board
-
-
-
-{-
-   computerMove : Game -> Generator Point
-   computerMove game =
-       case randomFortification game of
-           Just point ->
-               point
-
-           Nothing ->
-               randomEmptyPoint game.board
--}
