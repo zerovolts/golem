@@ -36,3 +36,7 @@ Then navigate to `localhost:8000`
 - Recolor or highlight any chains which are alive.
 - Seki - Prevents stones from being played in a "mutual life" area; Suicide calculation may need to be rewritten for this.
 - Superko - Repeating any previous board state is disallowed.
+
+## Screenshot
+
+![Game screenshot](./screenshot.png)
